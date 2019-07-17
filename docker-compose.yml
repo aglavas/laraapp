@@ -1,0 +1,60 @@
+version: "3"
+services:
+    redis:
+        image: redis:5.0.0-alpine
+        restart: always
+        container_name: myapp-redis
+        ports:
+            - 6379:6379
+        networks:
+             myapp_net: 
+                 ipv4_address: 172.16.238.13
+    es:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+        restart: always
+        container_name: myapp-es
+        environment:
+            - discovery.type=single-node
+        ports:
+            - 9200:9200
+        networks:
+            myapp_net:
+                ipv4_address: 172.16.238.10
+    db:
+        image: mysql:5.7.24
+        restart: always
+        container_name: myapp-db
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: mydb
+        ports:
+            - "3306:3306"
+        networks:
+            myapp_net:
+                ipv4_address: 172.16.238.11    
+    app:
+        build: src/
+        restart: always
+        container_name: myapp-web
+        depends_on:
+            - db
+            - redis
+            - es
+        ports:
+            - "8888:80"
+        volumes:
+            - ./src/laraapp:/var/www/laraapp
+        networks:
+            myapp_net:
+                ipv4_address: 172.16.238.12
+volumes:
+    web-app:
+        driver: local
+networks:
+    myapp_net:
+        driver: bridge
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.238.0/24
