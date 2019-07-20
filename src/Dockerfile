@@ -33,9 +33,10 @@ COPY --from=composer:1.5 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/laraapp
 
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+#RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+#RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # make laravel feel comfortable with mod-rewrite
-RUN a2enmod rewrite && service apache2 restart
+RUN a2enmod rewrite && a2enmod headers && a2enmod expires && service apache2 restart
 EXPOSE 80

@@ -42,9 +42,10 @@ services:
             - redis
             - es
         ports:
-            - "8888:80"
+            - "80:80"
         volumes:
             - ./src/laraapp:/var/www/laraapp
+            - ./src/vhost.conf:/etc/apache2/sites-available/000-default.conf
         networks:
             myapp_net:
                 ipv4_address: 172.16.238.12
