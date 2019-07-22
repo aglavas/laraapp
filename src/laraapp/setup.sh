@@ -15,4 +15,4 @@ chgrp -R www-data storage bootstrap/cache && \
 touch storage/logs/laravel.log && chmod 775 storage/logs/laravel.log && chown www-data storage/logs/laravel.log
 
 composer install && php artisan key:generate && npm install
-php artisan migrate:fresh --seed && php artisan passport:install && echo "Done..."
+php artisan migrate:fresh --seed && php artisan passport:install && echo "Done..." && composer test && echo "Tests done..."
