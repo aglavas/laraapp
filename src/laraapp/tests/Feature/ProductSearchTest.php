@@ -66,6 +66,8 @@ class ProductSearchTest extends TestCase
     {
         dump('test_product_search_successfully');
 
+        $this->disableAuthorization();
+
         dump('test_product_search_successfully_check_name');
 
         $this->checkName();
@@ -88,6 +90,10 @@ class ProductSearchTest extends TestCase
      */
     public function test_product_search_broken_params()
     {
+        dump('test_product_search_broken_params');
+
+        $this->disableAuthorization();
+
         $response = $this->searchProduct(['name' => '1:black;;']);
 
         $response->assertJsonCount(0, 'data');

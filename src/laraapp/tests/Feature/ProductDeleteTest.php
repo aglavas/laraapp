@@ -34,6 +34,8 @@ class ProductDeleteTest extends TestCase
     {
         dump('test_product_deleted_successfully');
 
+        $this->disableAuthorization();
+
         $response = $this->deleteProduct();
 
         $response->assertStatus(204);

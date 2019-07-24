@@ -48,6 +48,8 @@ class ProductShowTest extends TestCase
     {
         dump('test_product_show_successfully');
 
+        $this->disableAuthorization();
+
         $response = $this->showProduct();
 
         $response->assertStatus(200);

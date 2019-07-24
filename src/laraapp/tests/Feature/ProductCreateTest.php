@@ -43,6 +43,8 @@ class ProductCreateTest extends TestCase
     {
         dump('test_product_stored_successfully');
 
+        $this->disableAuthorization();
+
         $response = $this->storeProduct();
 
         $response->assertStatus(201);
@@ -59,6 +61,8 @@ class ProductCreateTest extends TestCase
     public function test_product_store_name_validation_error()
     {
         dump('test_product_store_name_validation_error');
+
+        $this->disableAuthorization();
 
         $response = $this->storeProduct(['name' => null]);
 
@@ -77,6 +81,8 @@ class ProductCreateTest extends TestCase
     public function test_product_store_price_validation_error()
     {
         dump('test_product_store_price_validation_error');
+
+        $this->disableAuthorization();
 
         $response = $this->storeProduct(['price' => null]);
 
@@ -104,6 +110,8 @@ class ProductCreateTest extends TestCase
     {
         dump('test_product_store_qty_validation_error');
 
+        $this->disableAuthorization();
+
         $response = $this->storeProduct(['qty' => null]);
 
         $response->assertStatus(422);
@@ -129,6 +137,8 @@ class ProductCreateTest extends TestCase
     public function test_product_store_attributes_validation_error()
     {
         dump('test_product_store_attributes_validation_error');
+
+        $this->disableAuthorization();
 
         $response = $this->storeProduct(['attributes' => null]);
 

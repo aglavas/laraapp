@@ -53,6 +53,8 @@ class ProductUpdateTest extends TestCase
     {
         dump('test_product_updated_successfully');
 
+        $this->disableAuthorization();
+
         $response = $this->updateProduct();
 
         $response->assertStatus(200);
@@ -68,6 +70,8 @@ class ProductUpdateTest extends TestCase
     public function test_product_partially_updated_successfully()
     {
         dump('test_product_partially_updated_successfully');
+
+        $this->disableAuthorization();
 
         $response = $this->updateProduct(['price']);
 
@@ -104,6 +108,8 @@ class ProductUpdateTest extends TestCase
     {
         dump('test_product_update_name_validation_error');
 
+        $this->disableAuthorization();
+
         $response = $this->updateProduct(['name' => null], true);
 
         $response->assertStatus(422);
@@ -121,6 +127,8 @@ class ProductUpdateTest extends TestCase
     public function test_product_update_price_validation_error()
     {
         dump('test_product_update_price_validation_error');
+
+        $this->disableAuthorization();
 
         $response = $this->updateProduct(['price' => null], true);
 
@@ -140,6 +148,8 @@ class ProductUpdateTest extends TestCase
     {
         dump('test_product_update_qty_validation_error');
 
+        $this->disableAuthorization();
+
         $response = $this->updateProduct(['qty' => null], true);
 
         $response->assertStatus(422);
@@ -158,6 +168,8 @@ class ProductUpdateTest extends TestCase
     public function test_product_update_attributes_validation_error()
     {
         dump('test_product_update_attributes_validation_error');
+
+        $this->disableAuthorization();
 
         $response = $this->updateProduct(['attributes' => null], true);
 

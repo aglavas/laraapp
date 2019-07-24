@@ -11,10 +11,16 @@ class CompanySeeder extends Seeder
      */
     public function run()
     {
-        \App\Entities\Company::create([
-           'name' => 'Ime',
-           'location' => 'Lokacija',
-           'user_id' => 1,
-        ]);
+        $ownerRole = \Spatie\Permission\Models\Role::where('name', 'owner')->first();
+
+        factory(\App\Entities\Company::class, 10)->create()->each(function ($company) use ($ownerRole) {
+            $company->load('user');
+            /** @var \App\Entities\User $user */
+            $user = $company->user;
+            $user->userCompanyRole()->create([
+                'company_id' => $company->id,
+                'role_id' => $ownerRole->id,
+            ]);
+        });;
     }
 }

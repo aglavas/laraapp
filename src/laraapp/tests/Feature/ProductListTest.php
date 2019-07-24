@@ -46,6 +46,8 @@ class ProductListTest extends TestCase
     {
         dump('test_product_list_successfully');
 
+        $this->disableAuthorization();
+
         $response = $this->listProducts();
 
         $response->assertStatus(200);

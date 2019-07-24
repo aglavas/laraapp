@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Product;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Entities\Company;
 
-class ProductShowRequest extends FormRequest
+class ProductShowRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,6 +15,15 @@ class ProductShowRequest extends FormRequest
      */
     public function authorize()
     {
+        $user = Auth::user();
+
+        /** @var Company $company */
+        $company = $this->all()['company'];
+
+        if( !$user->can('show', $company) ) {
+            return false;
+        }
+
         return true;
     }
 
