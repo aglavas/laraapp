@@ -18,6 +18,7 @@ class CreateUserCompanyRoleTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('company_id')->unsigned();
             $table->integer('role_id')->unsigned();
+            $table->unique(['user_id', 'company_id', 'role_id']);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
