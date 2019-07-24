@@ -3,13 +3,13 @@
 namespace App\Entities;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
+use App\Traits\CompanyAuthorization;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens, CompanyAuthorization;
 
     /**
      * Turn off timestamps
@@ -53,5 +53,25 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     * User has many labels and permissions
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCompanyPermission()
+    {
+        return $this->hasMany(UserCompanyPermission::class);
+    }
+
+    /**
+     * User has many labels and permissions
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userCompanyRole()
+    {
+        return $this->hasMany(UserCompanyRole::class);
     }
 }
