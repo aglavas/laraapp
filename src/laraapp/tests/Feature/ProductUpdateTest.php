@@ -249,7 +249,7 @@ class ProductUpdateTest extends TestCase
 
         $newArray = [];
 
-        if(!count($only)) {
+        if (!count($only)) {
             $newArray = $validFields;
         } else {
             foreach ($only as $field) {

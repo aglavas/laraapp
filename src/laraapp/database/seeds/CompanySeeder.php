@@ -21,6 +21,6 @@ class CompanySeeder extends Seeder
                 'company_id' => $company->id,
                 'role_id' => $ownerRole->id,
             ]);
-        });;
+        });
     }
 }

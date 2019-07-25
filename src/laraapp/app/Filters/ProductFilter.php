@@ -25,7 +25,7 @@ class ProductFilter extends QueryFilters
      */
     public function name($name)
     {
-        $this->builder->where('name','=', $name);
+        $this->builder->where('name', '=', $name);
     }
 
     /**
@@ -35,7 +35,7 @@ class ProductFilter extends QueryFilters
      */
     public function priceEq($price)
     {
-        $this->builder->where('price','=', $price);
+        $this->builder->where('price', '=', $price);
     }
 
     /**
@@ -45,7 +45,7 @@ class ProductFilter extends QueryFilters
      */
     public function priceGt($price)
     {
-        $this->builder->where('price','>', $price);
+        $this->builder->where('price', '>', $price);
     }
 
     /**
@@ -55,7 +55,7 @@ class ProductFilter extends QueryFilters
      */
     public function priceLt($price)
     {
-        $this->builder->where('price','<', $price);
+        $this->builder->where('price', '<', $price);
     }
 
     /**
@@ -65,7 +65,7 @@ class ProductFilter extends QueryFilters
      */
     public function qtyEq($qty)
     {
-        $this->builder->where('qty','=', $qty);
+        $this->builder->where('qty', '=', $qty);
     }
 
     /**
@@ -75,7 +75,7 @@ class ProductFilter extends QueryFilters
      */
     public function qtyGt($qty)
     {
-        $this->builder->where('qty','>', $qty);
+        $this->builder->where('qty', '>', $qty);
     }
 
     /**
@@ -85,7 +85,7 @@ class ProductFilter extends QueryFilters
      */
     public function qtyLt($qty)
     {
-        $this->builder->where('qty','<', $qty);
+        $this->builder->where('qty', '<', $qty);
     }
 
     /**e
@@ -97,7 +97,7 @@ class ProductFilter extends QueryFilters
     public function attribute($attributeData)
     {
         try {
-            $this->builder->whereHas('attributes', function ($q) use ($attributeData){
+            $this->builder->whereHas('attributes', function ($q) use ($attributeData) {
                 $explodedAllAttributes = explode(';', $attributeData);
 
                 $first = key($explodedAllAttributes);
@@ -106,13 +106,14 @@ class ProductFilter extends QueryFilters
                     $explodedAttributes = explode(':', $rawAttribute);
 
                     if ($key === $first) {
-                        $q->where('attribute_id','=', $explodedAttributes[0])->where('value','=', $explodedAttributes[1]);
+                        $q->where('attribute_id', '=', $explodedAttributes[0])
+                            ->where('value', '=', $explodedAttributes[1]);
                     } else {
-                        $q->orWhere('attribute_id','=', $explodedAttributes[0])->where('value','=', $explodedAttributes[1]);
+                        $q->orWhere('attribute_id', '=', $explodedAttributes[0])
+                            ->where('value', '=', $explodedAttributes[1]);
                     }
                 }
             });
-
         } catch (\Exception $exception) {
             throw new AttributeFormatException();
         }

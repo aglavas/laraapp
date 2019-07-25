@@ -20,8 +20,8 @@ trait CompanyAuthorization
         $role = Role::where('name', $role)->first();
 
         if ($role) {
-           $result = $this->userCompanyRole()->where('company_id', $company->id)->where('role_id', $role->id)->count();
-           return $result;
+            $result = $this->userCompanyRole()->where('company_id', $company->id)->where('role_id', $role->id)->count();
+            return $result;
         } else {
             return false;
         }
@@ -44,6 +44,5 @@ trait CompanyAuthorization
         } else {
             return false;
         }
-
     }
 }

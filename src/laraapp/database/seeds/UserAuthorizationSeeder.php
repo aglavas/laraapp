@@ -42,6 +42,5 @@ class UserAuthorizationSeeder extends Seeder
                 'permission_id' => $permission->id,
             ]);
         });
-
     }
 }

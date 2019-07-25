@@ -49,7 +49,6 @@ class ProductSearchTest extends TestCase
                     $size->id => ['value' => '42'],
                 ]);
             }
-
         });
 
         $this->assertCount(27, $products);
@@ -223,7 +222,7 @@ class ProductSearchTest extends TestCase
      */
     private function searchProduct($payload)
     {
-        $response = $this->json('GET',"/api/products", $payload);
+        $response = $this->json('GET', "/api/products", $payload);
 
         return $response;
     }

@@ -20,7 +20,7 @@ class ProductShowRequest extends BaseRequest
         /** @var Company $company */
         $company = $this->all()['company'];
 
-        if( !$user->can('show', $company) ) {
+        if (!$user->can('show', $company)) {
             return false;
         }
 

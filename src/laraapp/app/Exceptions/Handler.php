@@ -35,8 +35,9 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
-     * @return void
+     * @param Exception $exception
+     * @return mixed|void
+     * @throws Exception
      */
     public function report(Exception $exception)
     {
@@ -67,7 +68,14 @@ class Handler extends ExceptionHandler
         return $this->errorOutput($exception->getMessage(), 500);
     }
 
-    public function errorOutput($message, $code )
+    /**
+     * Error response format
+     *
+     * @param $message
+     * @param $code
+     * @return Response
+     */
+    public function errorOutput($message, $code)
     {
         $res =  [
             'error' => [
@@ -79,12 +87,17 @@ class Handler extends ExceptionHandler
             ]
         ];
 
-        return ( new Response($res , $code) )->header('Content-Type', 'application/json');
+        return (new Response($res, $code) )->header('Content-Type', 'application/json');
     }
 
+    /**
+     * Validation output response format
+     *
+     * @param $e
+     * @return Response
+     */
     public function validationOutput($e)
     {
-        /** @var Validator $validator */
         $validator = $e->validator;
 
         $messages = $validator->getMessageBag()->getMessages();
@@ -98,7 +111,6 @@ class Handler extends ExceptionHandler
             ]
         ];
 
-        return ( new Response($res , 422) )->header('Content-Type', 'application/json');
-
+        return (new Response($res, 422) )->header('Content-Type', 'application/json');
     }
 }

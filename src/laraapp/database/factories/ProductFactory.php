@@ -13,4 +13,3 @@ $factory->define(\App\Entities\Product::class, function (Faker $faker) {
         'company_id' => factory(\App\Entities\Company::class)->create()->id
     ];
 });
-

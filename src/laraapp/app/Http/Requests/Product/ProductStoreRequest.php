@@ -20,7 +20,7 @@ class ProductStoreRequest extends BaseRequest
         /** @var Company $company */
         $company = $this->all()['company'];
 
-        if(!$user->can('store', $company)) {
+        if (!$user->can('store', $company)) {
             return false;
         }
 

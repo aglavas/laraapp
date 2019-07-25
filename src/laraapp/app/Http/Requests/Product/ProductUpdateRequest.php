@@ -20,7 +20,7 @@ class ProductUpdateRequest extends BaseRequest
         /** @var Company $company */
         $company = $this->all()['company'];
 
-        if(!$user->can('update', $company)) {
+        if (!$user->can('update', $company)) {
             return false;
         }
 

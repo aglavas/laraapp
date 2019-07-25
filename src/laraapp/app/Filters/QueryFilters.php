@@ -22,12 +22,6 @@ abstract class QueryFilters
     protected $builder;
 
     /**
-     * Language identifier
-     * @var
-     */
-    protected $lang;
-
-    /**
      * Create a new QueryFilters instance.
      *
      * @param Request $request
@@ -47,19 +41,14 @@ abstract class QueryFilters
     {
         $this->builder = $builder;
 
-        foreach ($this->filters() as $name => $value)
-        {
-            if (! method_exists($this, $name))
-            {
+        foreach ($this->filters() as $name => $value) {
+            if (!method_exists($this, $name)) {
                 continue;
             }
 
-            if ($value || strlen($value))
-            {
+            if ($value || strlen($value)) {
                 $this->$name($value);
-            }
-            else
-            {
+            } else {
                 $this->$name();
             }
         }

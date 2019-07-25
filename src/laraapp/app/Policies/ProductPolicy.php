@@ -19,7 +19,9 @@ class ProductPolicy
      */
     public function store(User $user, Company $company)
     {
-        return (($user->id === $company->user_id) || ($user->hasCompanyRole('admin', $company)) || ($user->canCompanyPermission('update', $company)));
+        return (($user->id === $company->user_id) ||
+            ($user->hasCompanyRole('admin', $company)) ||
+            ($user->canCompanyPermission('update', $company)));
     }
 
     /**
@@ -31,7 +33,9 @@ class ProductPolicy
      */
     public function update(User $user, Company $company)
     {
-        return (($user->id === $company->user_id) || ($user->hasCompanyRole('admin', $company)) || ($user->canCompanyPermission('update', $company)));
+        return (($user->id === $company->user_id) ||
+            ($user->hasCompanyRole('admin', $company)) ||
+            ($user->canCompanyPermission('update', $company)));
     }
 
     /**
@@ -43,7 +47,9 @@ class ProductPolicy
      */
     public function delete(User $user, Company $company)
     {
-        return (($user->id === $company->user_id) || ($user->hasCompanyRole('admin', $company)) || ($user->canCompanyPermission('update', $company)));
+        return (($user->id === $company->user_id) ||
+            ($user->hasCompanyRole('admin', $company)) ||
+            ($user->canCompanyPermission('update', $company)));
     }
 
     /**

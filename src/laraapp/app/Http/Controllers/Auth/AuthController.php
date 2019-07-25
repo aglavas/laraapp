@@ -20,14 +20,14 @@ class AuthController extends Controller
      */
     public function login(AuthLoginRequest $request, AuthManager $authManager)
     {
-        if(Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             $user = $authManager->user();
             $userResource = AuthResource::make($user);
 
-            return $this->successDataResponse($userResource,200);
+            return $this->successDataResponse($userResource, 200);
         }
 
-        return $this->errorMessageResponse('Wrong email/password combination.',401);
+        return $this->errorMessageResponse('Wrong email/password combination.', 401);
     }
 
     /**
@@ -40,6 +40,6 @@ class AuthController extends Controller
         $token = Auth::user()->token();
         $token->revoke();
 
-        return $this->successMessageResponse('Token invalidated',200);
+        return $this->successMessageResponse('Token invalidated', 200);
     }
 }

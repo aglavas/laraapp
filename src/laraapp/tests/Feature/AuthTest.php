@@ -77,7 +77,7 @@ class AuthTest extends TestCase
      */
     private function login($payload)
     {
-        $response = $this->json('GET',"/api/login", $payload);
+        $response = $this->json('GET', "/api/login", $payload);
 
         return $response;
     }
@@ -89,7 +89,7 @@ class AuthTest extends TestCase
      */
     private function logout()
     {
-        $response = $this->post("api/logout", [] , ['Authorization' => "Bearer {$this->token}"]);
+        $response = $this->post("api/logout", [], ['Authorization' => "Bearer {$this->token}"]);
 
         return $response;
     }

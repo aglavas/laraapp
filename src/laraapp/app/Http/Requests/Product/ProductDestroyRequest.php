@@ -20,7 +20,7 @@ class ProductDestroyRequest extends BaseRequest
         /** @var Company $company */
         $company = $this->all()['company'];
 
-        if(!$user->can('delete', $company)) {
+        if (!$user->can('delete', $company)) {
             return false;
         }
 

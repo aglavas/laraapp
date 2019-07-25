@@ -9,12 +9,12 @@ use App\Exceptions\AttributeFormatException;
 use App\Filters\ProductFilter;
 use App\Http\Requests\Product\ProductDestroyRequest;
 use App\Http\Requests\Product\ProductListRequest;
+use App\Http\Requests\Product\ProductSearchRequest;
 use App\Http\Requests\Product\ProductShowRequest;
 use App\Http\Requests\Product\ProductStoreRequest;
 use App\Http\Requests\Product\ProductUpdateRequest;
 use App\Http\Resources\CompanyListProducts\CompanyListProducts;
 use App\Http\Resources\Product\ProductResource;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -27,8 +27,12 @@ class ProductController extends Controller
      * @param ProductRepositoryInterface $productRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(ProductShowRequest $request, Company $company, Product $product, ProductRepositoryInterface $productRepository)
-    {
+    public function show(
+        ProductShowRequest $request,
+        Company $company,
+        Product $product,
+        ProductRepositoryInterface $productRepository
+    ) {
         $product = $productRepository->loadProductRelations($product, ['attributes']);
 
         $productFormatted = ProductResource::make($product)->toArray($request);
@@ -44,8 +48,11 @@ class ProductController extends Controller
      * @param ProductRepositoryInterface $productRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function list(ProductListRequest $request, Company $company, ProductRepositoryInterface $productRepository)
-    {
+    public function list(
+        ProductListRequest $request,
+        Company $company,
+        ProductRepositoryInterface $productRepository
+    ) {
         $products = $productRepository->listProductsByCompany($company);
 
         $productsFormatted = CompanyListProducts::make($products)->toArray($request);
@@ -61,8 +68,11 @@ class ProductController extends Controller
      * @param ProductRepositoryInterface $productRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(ProductStoreRequest $request, Company $company, ProductRepositoryInterface $productRepository)
-    {
+    public function store(
+        ProductStoreRequest $request,
+        Company $company,
+        ProductRepositoryInterface $productRepository
+    ) {
         try {
             $product = $productRepository->createProductByCompanyId($company, $request->input());
 
@@ -83,8 +93,12 @@ class ProductController extends Controller
      * @param ProductRepositoryInterface $productRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(ProductUpdateRequest $request, Company $company, Product $product, ProductRepositoryInterface $productRepository)
-    {
+    public function update(
+        ProductUpdateRequest $request,
+        Company $company,
+        Product $product,
+        ProductRepositoryInterface $productRepository
+    ) {
         try {
             $product = $productRepository->updateProduct($product, $request->input());
 
@@ -105,8 +119,12 @@ class ProductController extends Controller
      * @param ProductRepositoryInterface $productRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(ProductDestroyRequest $request, Company $company, Product $product, ProductRepositoryInterface $productRepository)
-    {
+    public function destroy(
+        ProductDestroyRequest $request,
+        Company $company,
+        Product $product,
+        ProductRepositoryInterface $productRepository
+    ) {
         try {
             $productRepository->destroyProduct($product);
         } catch (\Exception $exception) {
@@ -119,15 +137,19 @@ class ProductController extends Controller
     /**
      * Searches product entity
      *
-     * @param Request $request
+     * @param ProductSearchRequest $request
      * @param Product $product
      * @param ProductFilter $filter
      * @param ProductRepositoryInterface $productRepository
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getProducts(Request $request, Product $product, ProductFilter $filter, ProductRepositoryInterface $productRepository)
-    {
-        try{
+    public function getProducts(
+        ProductSearchRequest $request,
+        Product $product,
+        ProductFilter $filter,
+        ProductRepositoryInterface $productRepository
+    ) {
+        try {
             $products = $productRepository->searchProduct($product, $filter);
 
             $productFormatted = ProductResource::collection($products)->toArray($request);
