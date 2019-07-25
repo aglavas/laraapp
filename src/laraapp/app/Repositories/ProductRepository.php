@@ -127,7 +127,7 @@ class ProductRepository implements ProductRepositoryInterface
         if (isset($params['attributes'])) {
             $attributesArray = $this->formatter->formatAttributes($params['attributes']);
         } else {
-            $attributesArray = []; //?
+            $attributesArray = [];
         }
 
         $product->attributes()->sync($attributesArray);
