@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Entities\Attribute;
 use App\Entities\Product;
+use App\Entities\User;
 use App\Http\Resources\Product\ProductResource;
 use Tests\TestCase;
 
@@ -44,7 +45,7 @@ class ProductShowTest extends TestCase
      *
      * @return void
      */
-    public function test_product_show_successfully()
+    public function testProductShowSuccessfully()
     {
         dump('test_product_show_successfully');
 
@@ -57,6 +58,66 @@ class ProductShowTest extends TestCase
         $resourceProduct = ProductResource::make($this->product)->response()->getData(true);
 
         $response->assertJsonFragment($resourceProduct['data']);
+    }
+
+    /**
+     * Test product show authorization cases - successful
+     */
+    public function testProductShowAuthorizationSuccessfully()
+    {
+        dump('test_product_show_authorization_successfully_company_update_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->product->company->id,
+            'permission_id' => $this->updatePermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->showProduct();
+
+        $response->assertStatus(200);
+
+        $resourceProduct = ProductResource::make($this->product)->response()->getData(true);
+
+        $response->assertJsonFragment($resourceProduct['data']);
+
+        dump('test_product_show_authorization_successfully_company_view_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->product->company->id,
+            'permission_id' => $this->viewPermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->showProduct();
+
+        $response->assertStatus(200);
+
+        $resourceProduct = ProductResource::make($this->product)->response()->getData(true);
+
+        $response->assertJsonFragment($resourceProduct['data']);
+    }
+
+    /**
+     * Test product show authorization cases - unsuccessful
+     */
+    public function testProductShowAuthorizationUnsuccessfully()
+    {
+        dump('test_product_show_authorization_unsuccessfully_no_permissions');
+
+        $user = factory(User::class)->create();
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->showProduct();
+
+        $response->assertStatus(403);
     }
 
     /**

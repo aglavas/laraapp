@@ -30,7 +30,7 @@ class AuthTest extends TestCase
      *
      * @return void
      */
-    public function test_login_successfully()
+    public function testLogin()
     {
         dump('test_login_successfully');
 
@@ -70,6 +70,18 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Log out auth error
+     */
+    public function testLogoutAuthError()
+    {
+        dump('test_logout_auth_error');
+
+        $response = $this->logout();
+
+        $response->assertStatus(401);
+    }
+
+    /**
      * Send login request
      *
      * @param $payload
@@ -93,6 +105,4 @@ class AuthTest extends TestCase
 
         return $response;
     }
-
-    //@todo unathenticated
 }

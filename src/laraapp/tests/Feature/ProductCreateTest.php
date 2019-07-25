@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Entities\Company;
 use Tests\TestCase;
 use App\Entities\Attribute;
+use App\Entities\User;
 
 class ProductCreateTest extends TestCase
 {
@@ -13,10 +14,14 @@ class ProductCreateTest extends TestCase
      */
     private $company;
 
-    /** @var Attribute */
+    /**
+     * @var Attribute
+     */
     private $color;
 
-    /** @var Attribute */
+    /**
+     * @var Attribute
+     */
     private $size;
 
     /**
@@ -39,7 +44,7 @@ class ProductCreateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_stored_successfully()
+    public function testProductStoredSuccessfully()
     {
         dump('test_product_stored_successfully');
 
@@ -58,7 +63,7 @@ class ProductCreateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_store_name_validation_error()
+    public function testProductStoreNameValidationError()
     {
         dump('test_product_store_name_validation_error');
 
@@ -78,7 +83,7 @@ class ProductCreateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_store_price_validation_error()
+    public function testProductStorePriceValidationError()
     {
         dump('test_product_store_price_validation_error');
 
@@ -106,7 +111,7 @@ class ProductCreateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_store_qty_validation_error()
+    public function testProductStoreQtyValidationError()
     {
         dump('test_product_store_qty_validation_error');
 
@@ -134,7 +139,7 @@ class ProductCreateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_store_attributes_validation_error()
+    public function testProductStoreAttributesValidationError()
     {
         dump('test_product_store_attributes_validation_error');
 
@@ -172,6 +177,106 @@ class ProductCreateTest extends TestCase
         $response->assertJsonFragment([
             'attributes.0.id' => ['The selected attributes.0.id is invalid.'],
         ]);
+    }
+
+    /**
+     * Test product store authorization cases - successful
+     */
+    public function testProductStoreAuthorizationSuccessfully()
+    {
+        dump('test_product_store_authorization_successfully_user_company_owner');
+
+        $user = $this->company->user;
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->storeProduct();
+
+        $response->assertStatus(201);
+
+        $response->assertJsonFragment($this->validFields());
+
+        dump('test_product_store_authorization_successfully_user_company_admin');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyRole()->create([
+            'company_id' => $this->company->id,
+            'role_id' => $this->admin->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->storeProduct();
+
+        $response->assertStatus(201);
+
+        $response->assertJsonFragment($this->validFields());
+
+        dump('test_product_store_authorization_successfully_company_update_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->company->id,
+            'permission_id' => $this->updatePermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->storeProduct();
+
+        $response->assertStatus(201);
+
+        $response->assertJsonFragment($this->validFields());
+    }
+
+    /**
+     * Test product store authorization cases - unsuccessful
+     */
+    public function testProductStoreAuthorizationUnsuccessfully()
+    {
+        dump('test_product_store_authorization_unsuccessfully_wrong_owner');
+
+        $company = factory(Company::class)->create();
+
+        $user = $company->user;
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->storeProduct();
+
+        $response->assertStatus(403);
+
+        dump('test_product_store_authorization_unsuccessfully_guest_role');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyRole()->create([
+            'company_id' => $this->company->id,
+            'role_id' => $this->guest->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->storeProduct();
+
+        $response->assertStatus(403);
+
+        dump('test_product_store_authorization_unsuccessfully_view_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->company->id,
+            'permission_id' => $this->viewPermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->storeProduct();
+
+        $response->assertStatus(403);
     }
 
     /**

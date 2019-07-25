@@ -54,57 +54,17 @@ class ProductSearchTest extends TestCase
         $this->assertCount(27, $products);
 
         $this->signIsUsingPassport();
-    }
-
-    /**
-     * A product stored successfully.
-     *
-     * @return void
-     */
-    public function test_product_search_successfully()
-    {
-        dump('test_product_search_successfully');
 
         $this->disableAuthorization();
-
-        dump('test_product_search_successfully_check_name');
-
-        $this->checkName();
-
-        dump('test_product_search_successfully_check_price');
-
-        $this->checkPrice();
-
-        dump('test_product_search_successfully_check_qty');
-
-        $this->checkqty();
-
-        dump('test_product_search_successfully_check_attributes');
-
-        $this->checkAttributes();
-    }
-
-    /**
-     * Test broken search params
-     */
-    public function test_product_search_broken_params()
-    {
-        dump('test_product_search_broken_params');
-
-        $this->disableAuthorization();
-
-        $response = $this->searchProduct(['name' => '1:black;;']);
-
-        $response->assertJsonCount(0, 'data');
-
-        $response->assertStatus(200);
     }
 
     /**
      * Check name query param
      */
-    private function checkName()
+    public function testProductSearchName()
     {
+        dump('test_product_search_successfully_name');
+
         $response = $this->searchProduct(['name' => 'Test999']);
 
         $response->assertJsonCount(7, 'data');
@@ -115,8 +75,10 @@ class ProductSearchTest extends TestCase
     /**
      * Check price query param
      */
-    private function checkPrice()
+    public function testProductSearchPrice()
     {
+        dump('test_product_search_successfully_price');
+
         $response = $this->searchProduct(['priceGt' => '20']);
 
         $response->assertJsonCount(20, 'data');
@@ -145,8 +107,10 @@ class ProductSearchTest extends TestCase
     /**
      * Check qty query param
      */
-    private function checkQty()
+    public function testProductSearchQty()
     {
+        dump('test_product_search_successfully_qty');
+
         $response = $this->searchProduct(['qtyEq' => '15']);
 
         $response->assertJsonCount(10, 'data');
@@ -175,8 +139,10 @@ class ProductSearchTest extends TestCase
     /**
      * Check attribute query param
      */
-    private function checkAttributes()
+    public function testProductSearchAttributes()
     {
+        dump('test_product_search_successfully_attributes');
+
         $response = $this->searchProduct(['attribute' => '1:black']);
 
         $response->assertJsonCount(3, 'data');
@@ -210,6 +176,22 @@ class ProductSearchTest extends TestCase
         $response = $this->searchProduct(['attribute' => '1:black;2:38;2:40;1:green']);
 
         $response->assertJsonCount(8, 'data');
+
+        $response->assertStatus(200);
+    }
+
+    /**
+     * Test broken search params
+     */
+    public function testProductSearchBrokenParams()
+    {
+        dump('test_product_search_broken_params');
+
+        $this->disableAuthorization();
+
+        $response = $this->searchProduct(['name' => '1:black;;']);
+
+        $response->assertJsonCount(0, 'data');
 
         $response->assertStatus(200);
     }

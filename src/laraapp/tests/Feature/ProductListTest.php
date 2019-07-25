@@ -4,9 +4,8 @@ namespace Tests\Feature;
 
 use App\Entities\Company;
 use App\Entities\Product;
+use App\Entities\User;
 use App\Http\Resources\CompanyListProducts\CompanyListProducts;
-use App\Http\Resources\CompanyListProducts\ProductListResource;
-use App\Http\Resources\Product\ProductResource;
 use Tests\TestCase;
 
 class ProductListTest extends TestCase
@@ -42,7 +41,7 @@ class ProductListTest extends TestCase
      *
      * @return void
      */
-    public function test_product_list_successfully()
+    public function testProductListSuccessfully()
     {
         dump('test_product_list_successfully');
 
@@ -57,6 +56,60 @@ class ProductListTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonFragment($resourceProducts['data']);
         $response->assertJsonCount(10, 'data.products');
+    }
+
+    /**
+     * Test product list authorization cases - successful
+     */
+    public function testProductListAuthorizationSuccessfully()
+    {
+        dump('test_product_list_authorization_successfully_company_update_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->company->id,
+            'permission_id' => $this->updatePermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->listProducts();
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(10, 'data.products');
+
+        dump('test_product_list_authorization_successfully_company_view_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->company->id,
+            'permission_id' => $this->viewPermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->listProducts();
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(10, 'data.products');
+    }
+
+    /**
+     * Test product list authorization cases - unsuccessful
+     */
+    public function testProductListAuthorizationUnsuccessfully()
+    {
+        dump('test_product_retrieve_authorization_unsuccessfully_no_permissions');
+
+        $user = factory(User::class)->create();
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->listProducts();
+
+        $response->assertStatus(403);
     }
 
     /**

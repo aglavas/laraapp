@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Entities\Attribute;
 use App\Entities\Product;
+use App\Entities\User;
+use App\Entities\Company;
 use Tests\TestCase;
 
 class ProductUpdateTest extends TestCase
@@ -13,10 +15,14 @@ class ProductUpdateTest extends TestCase
      */
     private $product;
 
-    /** @var Attribute */
+    /**
+     * @var Attribute
+     */
     private $color;
 
-    /** @var Attribute */
+    /**
+     * @var Attribute
+     */
     private $size;
 
     /**
@@ -49,7 +55,7 @@ class ProductUpdateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_updated_successfully()
+    public function testProductUpdatedSuccessfully()
     {
         dump('test_product_updated_successfully');
 
@@ -67,7 +73,7 @@ class ProductUpdateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_partially_updated_successfully()
+    public function testProductPartiallyUpdatedSuccessfully()
     {
         dump('test_product_partially_updated_successfully');
 
@@ -104,7 +110,7 @@ class ProductUpdateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_update_name_validation_error()
+    public function testProductUpdateNameValidationError()
     {
         dump('test_product_update_name_validation_error');
 
@@ -124,7 +130,7 @@ class ProductUpdateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_update_price_validation_error()
+    public function testProductUpdatePriceValidationError()
     {
         dump('test_product_update_price_validation_error');
 
@@ -144,7 +150,7 @@ class ProductUpdateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_update_qty_validation_error()
+    public function testProductUpdateQtyValidationError()
     {
         dump('test_product_update_qty_validation_error');
 
@@ -165,7 +171,7 @@ class ProductUpdateTest extends TestCase
      *
      * @return void
      */
-    public function test_product_update_attributes_validation_error()
+    public function testProductUpdateAttributesValidationError()
     {
         dump('test_product_update_attributes_validation_error');
 
@@ -203,6 +209,106 @@ class ProductUpdateTest extends TestCase
         $response->assertJsonFragment([
             'attributes.0.id' => ['The selected attributes.0.id is invalid.'],
         ]);
+    }
+
+    /**
+     * Test product update authorization cases - successful
+     */
+    public function testProductUpdateAuthorizationSuccessfully()
+    {
+        dump('test_product_update_authorization_successfully_user_company_owner');
+
+        $user = $this->product->company->user;
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->updateProduct();
+
+        $response->assertStatus(200);
+
+        $response->assertJsonFragment($this->validFields());
+
+        dump('test_product_update_authorization_successfully_user_company_admin');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyRole()->create([
+            'company_id' => $this->product->company->id,
+            'role_id' => $this->admin->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->updateProduct();
+
+        $response->assertStatus(200);
+
+        $response->assertJsonFragment($this->validFields());
+
+        dump('test_product_update_authorization_successfully_company_update_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->product->company->id,
+            'permission_id' => $this->updatePermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->updateProduct();
+
+        $response->assertStatus(200);
+
+        $response->assertJsonFragment($this->validFields());
+    }
+
+    /**
+     * Test product update authorization cases - unsuccessful
+     */
+    public function testProductUpdateAuthorizationUnsuccessfully()
+    {
+        dump('test_product_update_authorization_unsuccessfully_wrong_owner');
+
+        $company = factory(Company::class)->create();
+
+        $user = $company->user;
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->updateProduct();
+
+        $response->assertStatus(403);
+
+        dump('test_product_update_authorization_unsuccessfully_guest_role');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyRole()->create([
+            'company_id' => $this->product->company->id,
+            'role_id' => $this->guest->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->updateProduct();
+
+        $response->assertStatus(403);
+
+        dump('test_product_update_authorization_unsuccessfully_view_permission');
+
+        $user = factory(User::class)->create();
+
+        $user->userCompanyPermission()->create([
+            'company_id' => $this->product->company->id,
+            'permission_id' => $this->viewPermission->id,
+        ]);
+
+        $this->signIsUsingPassportAsUser($user);
+
+        $response = $this->updateProduct();
+
+        $response->assertStatus(403);
     }
 
     /**
