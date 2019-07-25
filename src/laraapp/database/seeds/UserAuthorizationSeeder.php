@@ -35,12 +35,20 @@ class UserAuthorizationSeeder extends Seeder
                 'role_id' => $role->id,
             ]);
 
-            $user = $usersWithoutOwner->random();
-            $permission = $permissions->random();
-            $company->userCompanyPermission()->create([
-                'user_id' => $user->id,
-                'permission_id' => $permission->id,
-            ]);
+            if ($role->name == 'admin') {
+                $array = [];
+                $permissions->each(function ($permission) use (&$array, $user) {
+                    array_push($array, ['user_id' => $user->id, 'permission_id' => $permission->id]);
+                });
+
+                $company->userCompanyPermission()->createMany($array);
+            } else {
+                $permission = $permissions->random();
+                $company->userCompanyPermission()->create([
+                    'user_id' => $user->id,
+                    'permission_id' => $permission->id,
+                ]);
+            }
         });
     }
 }
